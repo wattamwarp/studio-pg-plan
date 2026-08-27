@@ -277,66 +277,6 @@
       });
       var armMid = yTop - armD / 2;
       doors.push({ v: 1, x: stXN, y0: armMid - 1.3, y1: armMid + 1.3, into: 1, hinge: 'bottom' });
-    } else if (c.coreSide === 'east' && c.coreLobby && c.stairType === 'wrap') {
-      // Lift inside the stair well (photo pattern): 4-passenger shaft in the
-      // centre, 3'-0" clear flights on both sides, landing south that opens
-      // onto the spine. Rear turns use winders against the blind wall so the
-      // core stays shallow enough to hand depth to rooms 07/08. A full
-      // three-leg wrap with a north flight would need ~11'-9" of depth and
-      // would grow the core, not shrink it.
-      var lobD = c.lobbyDepth || 3.5;
-      var flightW = c.flightW || 3.5;          // outer; clear = flightW - 0.5
-      var liftW = c.liftW || 5.42;             // outer E-W; clear ~1500 mm
-      var x0 = CB1, x1 = c.wrapW ? CB1 + c.wrapW : EAST;
-      if (x1 > EAST) x1 = EAST;
-      // keep the west flight at flightW; east flight absorbs any leftover width
-      var lx0 = x0 + flightW;
-      var lx1 = lx0 + liftW;
-      if (lx1 + flightW > x1) lx1 = x1 - flightW; // protect min east flight
-      sp.push({
-        n: 'CORRIDOR', sub: (lobD - 0.5).toFixed(1).replace('.0', '') + "\u2032 clear",
-        r: [x0 - W, k[0] + W, x1 - W, k[0] + lobD - W], t: 'circ', cat: 'circ'
-      });
-      sp.push({
-        n: 'LIFT', sub: c.liftSub || '4-passenger \u00B7 1500 \u00D7 1300 well \u00B7 in stair',
-        r: [lx0 + W, k[0] + lobD + W, lx1 - W, yTop - W],
-        t: 'svc', k: 'lift', cat: 'svc', doorSide: 'S'
-      });
-      sp.push({
-        n: 'STAIRCASE', sub: c.stairSub || 'Wrap \u00B7 lift in well \u00B7 3\u2032 flights',
-        r: [x0 + W, k[0] + lobD + W, lx0 - W, yTop - W],
-        t: 'circ', k: 'stair', cat: 'circ', stairType: 'wrap', wrapSide: 'W', grp: 'stair-wrap'
-      });
-      sp.push({
-        n: '', quiet: 1, grp: 'stair-wrap',
-        r: [lx1 + W, k[0] + lobD + W, x1 - W, yTop - W],
-        t: 'circ', k: 'stair', cat: 'circ', stairType: 'wrap', wrapSide: 'E'
-      });
-    } else if (c.coreSide === 'east' && c.coreLobby && c.stairType === 'spiral') {
-      // Spiral beside lift (not wrapping). Wrap-around needs ~12'-2" and grows
-      // the core. Side-by-side: corridor arm only under the lift; spiral takes
-      // the full core height so its diameter is set by the bay, not by the
-      // leftover above the arm. Lift well turns the 1500 mm face east-west with
-      // the door south into the arm (lands in the corridor). Spiral door west
-      // into the same arm.
-      var lobD = c.lobbyDepth || 3.5, liftW = c.liftW || 5.42;
-      var stX = CB1 + liftW;
-      sp.push({
-        n: 'CORRIDOR', sub: (lobD - 0.5).toFixed(1).replace('.0', '') + "\u2032 clear",
-        r: [CB1 - W, k[0] + W, stX - W, k[0] + lobD - W], t: 'circ', cat: 'circ'
-      });
-      sp.push({
-        n: 'LIFT', sub: c.liftSub || '4-passenger \u00B7 1500 \u00D7 1300 well',
-        r: [CB1 + W, k[0] + lobD + W, CB1 + liftW - W, yTop - W],
-        t: 'svc', k: 'lift', cat: 'svc', doorSide: 'S'
-      });
-      sp.push({
-        n: 'STAIRCASE', sub: c.stairSub || 'Spiral \u00B7 full-height bay',
-        r: [stX + W, k[0] + W, EAST - W, yTop - W],
-        t: 'circ', k: 'stair', cat: 'circ', stairType: 'spiral'
-      });
-      var lobMid = k[0] + lobD / 2;
-      doors.push({ v: 1, x: stX, y0: lobMid - 1.3, y1: lobMid + 1.3, into: 1, hinge: 'bottom' });
     } else if (c.coreSide === 'east' && c.coreLobby) {
       // Sized from vendor and code numbers rather than round figures.
       //   lift   — 4-passenger 272 kg, clear well 1600 x 1350 mm, entrance on
@@ -534,46 +474,11 @@
       }
     },
     {
-      id: 'opt-d5', code: 'TF-D5', name: 'Option D5', headline: '8 rooms, spiral core',
-      badge: 'Spiral + deeper R07/R08',
-      note: 'D4 core redesigned for your brief: spiral stair beside the lift, lift as the circulation centre of the bay, store deleted. A lift wrapped by the stair was tested and does not save space \u2014 a 4-passenger well plus two flights around it needs about 12\u2032-2\u2033 across, more than this corner has. Side-by-side packing lets the spiral take the full core height while the corridor arm sits only under the lift, so the south edge of the core can move north by about 1\u2032-0\u2033.',
-      note2: 'Room gain for 07/08 comes from three places: core moved north (~1\u2032), Sikandar outer strip 4\u2032-8\u2033 \u2192 4\u2032-5\u2033, and the spine nudged 5\u2033 west so the east band picks up width the garden rooms can spare. Net about +11 sq ft each (76 \u2192 87). The lift keeps a true 1500 \u00D7 1300 mm clear with its door south into the corridor arm; spiral diameter is set by the full-height bay (~7\u2032-8\u2033).',
-      note3: 'Caveat: a spiral as the primary exit on a G+3 lodging is a fire-NOC risk under NBC 2016. Treat D5 as a space study; D3 remains the buildable dog-leg if the stair has to stay code-clean. Perfect geometric centering of the lift leaves too little for a usable spiral on either side, so the lift sits between the spine and the spiral \u2014 centre of the circulation, not the bay.',
-      cfg: {
-        frontDepth: 15.6, corr: 3.5, spineX: 18.7, nFront: 4,
-        bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.4, wcW: 4.6, wcWE: 4.4,
-        westBal: 0.6,
-        west: [[19.1, 32.0], [32.0, 46.4]], east: [[19.1, 28.61], [28.61, 38.12]],
-        eastBal: 2.8, coreY: [38.12, 46.4], coreSide: 'east',
-        coreLobby: true, stairType: 'spiral', lobbyDepth: 3.5, liftW: 5.43,
-        liftSub: '4-passenger \u00B7 1500 \u00D7 1300 well \u00B7 door S',
-        stairSub: 'Spiral \u00B7 full-height bay', endEntry: true
-      }
-    },
-    {
-      id: 'opt-d6', code: 'TF-D6', name: 'Option D6', headline: '8 rooms, lift in stair',
-      badge: 'Wrap core · grows R07/R08',
-      note: 'The photo pattern: a 4-passenger lift sits in the stair well, with a flight on each side and the landing opening south into the spine corridor. No spiral. Store deleted from the circulation block; any leftover against Sikandar stays a thin linen strip. Compared with D4\u2019s side-by-side dog-leg, the stair no longer needs its own full-depth bay beside the shaft, so the core can come north by about 1\u2032-0\u2033.',
-      note2: 'Lift well is the vendor floor 1500 \u00D7 1300 mm clear, door south onto the landing. Flights are 3\u2032-0\u2033 clear (east flight a little wider where the old store strip was absorbed). Rear corners turn with winders against the blind wall \u2014 same class of compact compromise as D4\u2019s short dog-leg, but the stair remains a normal rectangular wrap rather than a spiral. Rooms 07 and 08 pick up the freed depth, a 3\u2033 trim on the Sikandar outer strip, and a 4\u2033 spine nudge.',
-      note3: 'D4 kept as the side-by-side baseline; D5 kept as the spiral study. D6 is the one that matches the lift-in-stair image. If the authority insists on two full 8-going flights with no winders, the wrap needs a north flight and grows back past D4 \u2014 then D3\u2019s measured dog-leg is the safer build.',
-      cfg: {
-        frontDepth: 15.6, corr: 3.5, spineX: 18.75, nFront: 4,
-        bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.4, wcW: 4.6, wcWE: 4.4,
-        westBal: 0.6,
-        west: [[19.1, 32.0], [32.0, 46.4]], east: [[19.1, 28.615], [28.615, 38.13]],
-        eastBal: 2.8, coreY: [38.13, 46.4], coreSide: 'east',
-        coreLobby: true, stairType: 'wrap', lobbyDepth: 3.5,
-        flightW: 3.5, liftW: 5.42,
-        liftSub: '4-passenger \u00B7 1500 \u00D7 1300 well \u00B7 in stair',
-        stairSub: 'Wrap \u00B7 lift in well \u00B7 3\u2032 flights', endEntry: true
-      }
-    },
-    {
       id: 'opt-d7', code: 'TF-D7', name: 'Option D7', headline: '8 rooms, lift on the corridor',
       badge: 'Lift faces R07/R08 \u00B7 one stair bay',
-      note: 'Your correction to D6. The split flights either side of the shaft are gone. The corridor arm moves to the blind rear, which lets the lift drop to the south-west corner of the core \u2014 its door now opens west straight onto the spine corridor, in line with the doors of rooms 07 and 08, instead of at the dead end past them. Step out of the lift and both rooms are in front of you.',
+      note: 'D4 with the core rebuilt around where the lift should open. The corridor arm moves to the blind rear, which lets the lift drop to the south-west corner of the core \u2014 its door now opens west straight onto the spine corridor, in line with the doors of rooms 07 and 08, instead of at the dead end past them. Step out of the lift and both rooms are in front of you.',
       note2: 'The stair takes the whole east bay as one undivided dog-leg, 9\u2032-3\u2033 across and 8\u2032-5\u2033 deep, with the flights running east\u2013west and the turn at the Sikandar wall. Flights are 1.23 m \u2014 well over the 1.0 m NBC asks and much better than D4\u2019s 0.91 m. The run is short for a full 8-going pair, so the turn takes winders; the arm along the rear is the arrival landing and also carries you from the spine to the stair door.',
-      note3: 'Rooms 07 and 08 land near 84 sq ft against D4\u2019s 77 \u2014 about 3 sq ft under D6, which is the price of putting the lift where you want it: the shaft needs its 1500 mm face on the spine, so the core is 8\u2032-11\u2033 deep rather than 8\u2032-3\u2033. If a winder-free dog-leg is required, the core has to go back to D3\u2019s depth and both rooms drop to 69.',
+      note3: 'Rooms 07 and 08 land near 84 sq ft against D4\u2019s 77, and the core is 8\u2032-11\u2033 deep rather than D4\u2019s 9\u2032-3\u2033. Two arrangements tested on the way here were dropped: a spiral beside the lift, which is barred as a primary exit on a G+3 lodging, and a lift sitting inside the stair well with a flight each side, which grew slightly bigger rooms but split the stair in two and left the lift facing the wrong way. If a winder-free dog-leg is required, the core has to go back to D3\u2019s depth and both rooms drop to 69.',
       cfg: {
         frontDepth: 15.6, corr: 3.5, spineX: 18.75, nFront: 4,
         bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.4, wcW: 4.6, wcWE: 4.4,
@@ -688,45 +593,6 @@
       c.line(b.x0 + 0.7, yUp, b.x1 - landW - 0.5, yUp, { stroke: '#0f766e', 'stroke-width': 0.4 });
       c.polyline([[b.x1 - landW - 1.2, yUp - 0.45], [b.x1 - landW - 0.5, yUp], [b.x1 - landW - 1.2, yUp + 0.45]],
         { stroke: '#0f766e', 'stroke-width': 0.4 });
-    } else if (sp.k === 'stair' && sp.stairType === 'wrap') {
-      // side flight beside the lift shaft — goings run north toward the rear
-      var nT = Math.max(5, Math.round(h / 0.82));
-      var go = h / nT;
-      for (var i = 0; i <= nT; i++) {
-        c.line(b.x0, b.y0 + i * go, b.x1, b.y0 + i * go, { stroke: '#a8b2be', 'stroke-width': 0.25 });
-      }
-      var mx = (b.x0 + b.x1) / 2;
-      var up = sp.wrapSide !== 'E';
-      var yA = up ? b.y0 + 0.7 : b.y1 - 0.7;
-      var yB = up ? b.y1 - 0.9 : b.y0 + 0.9;
-      c.line(mx, yA, mx, yB, { stroke: '#0f766e', 'stroke-width': 0.4 });
-      if (up) {
-        c.polyline([[mx - 0.4, yB - 0.7], [mx, yB], [mx + 0.4, yB - 0.7]], { stroke: '#0f766e', 'stroke-width': 0.4 });
-      } else {
-        c.polyline([[mx - 0.4, yB + 0.7], [mx, yB], [mx + 0.4, yB + 0.7]], { stroke: '#0f766e', 'stroke-width': 0.4 });
-      }
-    } else if (sp.k === 'stair' && sp.stairType === 'spiral') {
-      var cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2;
-      var rad = Math.min(w, h) / 2 - 0.15;
-      var steps = 16, hub = Math.max(0.55, rad * 0.22);
-      c.circle(cx, cy, rad, { fill: '#f6f8fa', stroke: '#8b96a5', 'stroke-width': 0.35 });
-      c.circle(cx, cy, hub, { fill: '#e8edf2', stroke: '#8b96a5', 'stroke-width': 0.3 });
-      for (var s = 0; s < steps; s++) {
-        var a0 = -Math.PI / 2 + (s / steps) * Math.PI * 2;
-        var a1 = -Math.PI / 2 + ((s + 1) / steps) * Math.PI * 2;
-        var r0 = hub, r1 = rad;
-        c.poly([
-          [cx + Math.cos(a0) * r0, cy + Math.sin(a0) * r0],
-          [cx + Math.cos(a0) * r1, cy + Math.sin(a0) * r1],
-          [cx + Math.cos(a1) * r1, cy + Math.sin(a1) * r1],
-          [cx + Math.cos(a1) * r0, cy + Math.sin(a1) * r0]
-        ], { fill: s % 2 ? '#eef2f6' : '#f6f8fa', stroke: '#a8b2be', 'stroke-width': 0.22 });
-      }
-      c.polyline([
-        [cx + hub * 0.3, cy - rad + 0.9],
-        [cx, cy - rad + 0.25],
-        [cx - hub * 0.3, cy - rad + 0.9]
-      ], { stroke: '#0f766e', 'stroke-width': 0.4 });
     } else if (sp.k === 'stair') {
       // one flight either side of a 4" well; the landing is never shallower
       // than a flight is wide, and the goings take whatever depth is left
@@ -980,19 +846,11 @@
     }));
     checks.push({ n: 'Corridor clear width \u2265 3\u2032-0\u2033', v: D.ftin(minC), ok: minC >= 2.99 });
 
-    // 7 — stair: dog-leg / spiral / wrap each have their own check
-    var stairs = sp.filter(function (s) { return s.k === 'stair'; });
-    var st = stairs[0];
+    // 7 — stair: a plain dog-leg and a winder-turn dog-leg are checked apart
+    var st = sp.filter(function (s) { return s.k === 'stair'; })[0];
     var sb = bbox(st.p || rp(st.r));
     var run = Math.max(sb.x1 - sb.x0, sb.y1 - sb.y0), wid = Math.min(sb.x1 - sb.x0, sb.y1 - sb.y0);
-    if (st.stairType === 'spiral') {
-      var dia = Math.min(wid, run) - 0.1;
-      checks.push({
-        n: 'Spiral stair \u2014 clear diameter \u2265 5\u2032-0\u2033 (space study)',
-        v: 'dia ' + D.ftin(dia) + ' \u00B7 primary-exit risk flagged',
-        ok: dia >= 5.0
-      });
-    } else if (st.stairType === 'winder') {
+    if (st.stairType === 'winder') {
       // flights run the long way; the turn is made up with winders, so the
       // check is on flight width and the straight run that is actually there
       var wFlight = (wid - 0.33) / 2;
@@ -1002,22 +860,6 @@
         n: 'Dog-leg with winder turn \u2014 flights \u2265 1.0 m',
         v: 'flights ' + D.ftin(wFlight) + ', straight run ' + D.ftin(straight) + ' + winders at the turn',
         ok: wFlight >= 3.28 && straight >= 4.9
-      });
-    } else if (st.stairType === 'wrap') {
-      // both side flights must clear 3'-0"; going run is short so rear winders
-      // finish the rise (documented compromise, same spirit as D4)
-      var flightClear = Math.min.apply(null, stairs.map(function (s) {
-        var b = bbox(s.p || rp(s.r));
-        return Math.min(b.x1 - b.x0, b.y1 - b.y0);
-      }));
-      var sideRun = Math.min.apply(null, stairs.map(function (s) {
-        var b = bbox(s.p || rp(s.r));
-        return Math.max(b.y1 - b.y0, 0); // goings run north beside the shaft
-      }));
-      checks.push({
-        n: 'Wrap stair \u2014 3\u2032-0\u2033 flights beside 4p lift',
-        v: 'flights ' + D.ftin(flightClear) + ', side run ' + D.ftin(sideRun) + ' + rear winders',
-        ok: flightClear >= 2.99
       });
     } else {
       // NBC 2016: apartment common stair 1.0 m minimum flight, riser 190 max,
