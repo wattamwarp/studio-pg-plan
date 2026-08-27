@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Studio P.G. — Layout Options</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand__mark">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M1 15h14M2.5 15V6L8 1.5 13.5 6v9M6 15v-4h4v4" stroke="currentColor" stroke-width="1.4"
+            stroke-linejoin="round" />
+        </svg>
+        Layout options
+      </div>
+      <h1>Studio P.G. Building</h1>
+      <p>Four options, one typical floor</p>
+    </div>
+    <nav class="nav" id="nav">
+      <a href="#overview"><span class="num">00</span> How I planned it</a>
+      <a href="#site"><span class="num">01</span> Site</a>
+      <a href="#opt-a"><span class="num">02</span> A — 8 rooms</a>
+      <a href="#opt-b"><span class="num">03</span> B — 9 rooms</a>
+      <a href="#opt-c"><span class="num">04</span> C — 7 rooms</a>
+      <a href="#opt-d"><span class="num">05</span> D — two garden rooms</a>
+      <a href="#opt-d1"><span class="num">06</span> D1 — wash on the gallery</a>
+      <a href="#opt-d2"><span class="num">07</span> D2 — no store</a>
+      <a href="#opt-d3"><span class="num">08</span> D3 — rebalanced</a>
+      <a href="#opt-d4"><span class="num">09</span> D4 — tightest core</a>
+      <a href="#opt-d5"><span class="num">10</span> D5 — spiral core</a>
+      <a href="#opt-d6"><span class="num">11</span> D6 — lift in stair</a>
+      <a href="#opt-d7"><span class="num">12</span> D7 — lift on the corridor</a>
+      <a href="#opt-e"><span class="num">13</span> E — deep front band</a>
+      <a href="#compare"><span class="num">14</span> Comparison</a>
+      <a href="#schedule"><span class="num">15</span> Room schedule</a>
+    </nav>
+    <div class="sidebar__foot">
+      All dimensions feet–inches.<br>6″ walls.<br>Concept design.
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="hero" id="overview">
+      <div class="eyebrow">Replanned from scratch</div>
+      <h2>Four options on one idea: let the corridor take the slant</h2>
+      <p>
+        Once the Sikandar side can take rooms on a 1′-0″ setback, <b>three of the four
+        boundaries can carry a window</b> and a double-loaded corridor becomes possible — which
+        is what makes a proper plan work here. The corridor <b>follows the garden boundary</b>,
+        so the garden band stays a constant depth and every one of those rooms is identical.
+        All the taper is pushed into the Sikandar band, and the core drops into its narrow
+        rear end, where the band is too shallow for a room anyway.
+      </p>
+      <p style="margin-top:14px">
+        The four options are the same idea tuned four ways — more rooms, bigger rooms, or a
+        deeper garden band. Pick by what you want to sell.
+      </p>
+      <dl class="stats" id="hero-stats"></dl>
+    </header>
+
+    <section class="sheet" id="site">
+      <div class="sheet__head"><h3>01 · Site</h3><span class="tag">SP-01</span></div>
+      <p class="sheet__lead">
+        The garden boundary slants in by 9.6 ft over the depth; Sikandar's is straight. Only
+        the rear is truly blind.
+      </p>
+      <div class="frame">
+        <div class="frame__bar"><span><strong>SP-01</strong></span><span>1 : 60 @ A3</span></div>
+        <div class="frame__body" id="draw-site"></div>
+      </div>
+    </section>
+
+    <div id="options"></div>
+
+    <section class="sheet" id="compare">
+      <div class="sheet__head"><h3>06 · Comparison</h3><span class="tag">Computed</span></div>
+      <div class="tablewrap" id="compare-table"></div>
+      <div class="note" style="margin-top:18px">
+        <h4>How to choose</h4>
+        <p><b>Option A</b> is the one I would build — eight rooms with the bedrooms still in the
+          high seventies, and the Sikandar rooms coming out as the best on the floor.</p>
+        <p><b>Option B</b> adds a ninth room for four extra units across a G+3, at the cost of
+          dropping every garden bedroom to about 64 sq ft.</p>
+        <p><b>Option C</b> is the four-wide-garden-rooms version you asked for. The garden
+          bedrooms grow to roughly 98 sq ft, which is the only option where a twin room feels
+          genuinely comfortable — but it costs a unit.</p>
+        <p><b>Option D</b> pushes the garden band to 19 ft so those bedrooms get a full 11 ft
+          of depth, and pays for it by taking the balconies off the Sikandar rooms.</p>
+      </div>
+    </section>
+
+    <section class="sheet" id="schedule">
+      <div class="sheet__head"><h3>07 · Room schedule</h3><span class="tag">Carpet areas</span></div>
+      <div class="toolbar" id="sched-tabs"></div>
+      <div class="tablewrap" id="sched-table"></div>
+    </section>
+  </main>
+
+  <script src="assets/draw.js"></script>
+  <script src="assets/plans.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+
+</html>
