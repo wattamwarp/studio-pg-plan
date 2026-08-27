@@ -277,38 +277,6 @@
       });
       var armMid = yTop - armD / 2;
       doors.push({ v: 1, x: stXN, y0: armMid - 1.3, y1: armMid + 1.3, into: 1, hinge: 'bottom' });
-    } else if (c.coreSide === 'east' && c.coreLobby) {
-      // Sized from vendor and code numbers rather than round figures.
-      //   lift   — 4-passenger 272 kg, clear well 1600 x 1350 mm, entrance on
-      //            the 1600 side, so the shaft turns its long face to the spine
-      //   stair  — 10'-0" floor to floor, 17 risers at 179 mm (NBC 2016 caps
-      //            the residential riser at 190), dog-leg 9 + 8, 250 mm goings,
-      //            two 1.2 m flights and a landing equal to the flight width
-      // The lift takes its door straight off the spine; the lobby beside it
-      // carries on east to the stair door, so neither is reached through a room.
-      var lobD = c.lobbyDepth || 5.25, liftW = c.liftW || 5.48;
-      var stX = c.stairW ? EAST - c.stairW : CB1 + liftW;
-      // no lobby room — the spine simply turns the corner and runs to the stair
-      // door, so both the lift and the stair put you straight into the corridor
-      sp.push({
-        n: 'CORRIDOR', sub: (lobD - 0.5).toFixed(1).replace('.0', '') + "\u2032 clear",
-        r: [CB1 - W, k[0] + W, stX - W, k[0] + lobD - W], t: 'circ', cat: 'circ'
-      });
-      sp.push({
-        n: 'LIFT', sub: c.liftSub || '4-passenger \u00B7 1600 \u00D7 1350 well',
-        r: [CB1 + W, k[0] + lobD + W, CB1 + liftW - W, yTop - W], t: 'svc', k: 'lift', cat: 'svc', doorSide: 'W'
-      });
-      if (stX - (CB1 + liftW) > 1.5) {
-        sp.push({
-          n: 'STORE', r: [CB1 + liftW + W, k[0] + lobD + W, stX - W, yTop - W], t: 'svc', cat: 'svc'
-        });
-      }
-      sp.push({
-        n: 'STAIRCASE', sub: 'Dog-leg \u00B7 17 risers \u00B7 2 \u00D7 1.2 m flights',
-        r: [stX + W, k[0] + W, EAST - W, yTop - W], t: 'circ', k: 'stair', cat: 'circ'
-      });
-      var lobMid = k[0] + lobD / 2;
-      doors.push({ v: 1, x: stX, y0: lobMid - 1.3, y1: lobMid + 1.3, into: 1, hinge: 'bottom' });
     } else if (c.coreSide === 'east') {
       // stair and lift side by side — the only arrangement on this plot that
       // gets a full 3'-0" pair of flights
@@ -318,30 +286,15 @@
         r: [EAST - sw + W, k[0] + W, EAST - W, yTop - W],
         t: 'circ', k: 'stair', cat: 'circ'
       });
-      if (c.noStore) {
-        // lift pushed to the very back so the pocket beside it lands against
-        // the last Sikandar room and becomes part of it, not a store
-        sp.push({
-          n: 'LIFT', sub: '4-passenger',
-          r: [CB1 + W, yTop - 5.9 + W, CB1 + 5.9 - W, yTop - W],
-          t: 'svc', k: 'lift', cat: 'svc'
-        });
-        sp.push({
-          n: '', tag: c.lastEastTag, grp: c.lastEastTag, quiet: 1,
-          r: [CB1 + W, k[0] + W, EAST - sw - W, yTop - 5.9 - W],
-          t: 'bed', cat: 'bed'
-        });
-      } else {
-        sp.push({
-          n: 'LIFT', sub: '4-passenger',
-          r: [CB1 + W, k[0] + W, CB1 + 5.9 - W, k[0] + 5.9 - W],
-          t: 'svc', k: 'lift', cat: 'svc'
-        });
-        sp.push({
-          n: 'STORE', r: [CB1 + W, k[0] + 5.9 + W, EAST - sw - W, yTop - W],
-          t: 'svc', cat: 'svc'
-        });
-      }
+      sp.push({
+        n: 'LIFT', sub: '4-passenger',
+        r: [CB1 + W, k[0] + W, CB1 + 5.9 - W, k[0] + 5.9 - W],
+        t: 'svc', k: 'lift', cat: 'svc'
+      });
+      sp.push({
+        n: 'STORE', r: [CB1 + W, k[0] + 5.9 + W, EAST - sw - W, yTop - W],
+        t: 'svc', cat: 'svc'
+      });
     } else {
       sp.push({
         n: 'STAIRCASE', sub: 'Open well \u00B7 skylit',
@@ -422,63 +375,11 @@
       }
     },
     {
-      id: 'opt-d1', code: 'TF-D1', name: 'Option D1', headline: '8 rooms, washroom on the gallery',
-      badge: 'Best Sikandar rooms',
-      note: 'Plan D reworked around your idea. On the road and Sikandar sides the washroom moves out to sit on the gallery, sharing the outer strip with a shorter balcony instead of eating a slice of the room\u2019s depth. That hands 2\u2032-0\u2033 straight back to every bedroom, and it gives each washroom a real window. Two full-depth garden rooms are kept, and the core sits in the rear-east with the stair and lift side by side \u2014 which is the only arrangement here that gets a true 3\u2032-0\u2033 stair.',
-      cfg: {
-        frontDepth: 15.8, corr: 3.5, spineX: 19.7, nFront: 4,
-        bal: 2.5, wc: 4.75, outerWash: true, outer: 5.0, wcW: 4.6, wcWE: 4.3,
-        west: [[19.3, 32.85], [32.85, 46.4]], east: [[19.3, 27.25], [27.25, 35.2]],
-        eastBal: 2.8, coreY: [35.2, 46.4], coreSide: 'east', stairW: 7.0
-      }
-    },
-    {
-      id: 'opt-d2', code: 'TF-D2', name: 'Option D2', headline: '8 rooms, no store',
-      badge: 'Biggest Sikandar room',
-      note: 'D1 with the store deleted. The lift is pushed to the very back of the core so the pocket beside it lands against Room 08 and becomes part of it \u2014 turning the last Sikandar room into the largest on the floor rather than 30 sq ft of shelving. Everything else is D1.',
-      cfg: {
-        frontDepth: 15.8, corr: 3.5, spineX: 19.7, nFront: 4,
-        bal: 2.5, wc: 4.75, outerWash: true, outer: 5.0, wcW: 4.6, wcWE: 4.3,
-        west: [[19.3, 32.85], [32.85, 46.4]], east: [[19.3, 27.25], [27.25, 35.2]],
-        eastBal: 2.8, coreY: [35.2, 46.4], coreSide: 'east', stairW: 7.0, noStore: true
-      }
-    },
-    {
-      id: 'opt-d3', code: 'TF-D3', name: 'Option D3', headline: '8 rooms, rebalanced',
-      badge: 'Core resolved · recommended',
-      note2: 'Core rebuilt to measured sizes, not round ones. Two faults were found here. The staircase shared walls only with room 08 and its balcony, so the fire stair could only be reached by walking through a bedroom \u2014 and room 08\u2019s 31 sq ft rear pocket was sealed behind a 6\u2033 wall while still being counted in its area. The rear-east block is now lift, lobby and stair in one line off the spine. The lift well is 1600 \u00D7 1350 mm, the 4-passenger figure common to the Hybon, IEC and Hexa tables, with its entrance on the 1600 side facing the corridor. The stair is 2500 \u00D7 3200 mm clear: 17 risers at 179 mm for a 10\u2032-0\u2033 floor (NBC 2016 caps the residential riser at 190), a 9 + 8 dog-leg, 250 mm goings and a 1.2 m landing matching the 1.2 m flights \u2014 wider than the 1.0 m NBC asks of an apartment stair. Room 08 drops to a true 69 sq ft, matching room 07; the floor gains 8 sq ft of real carpet because the sealed pocket and the dead strip beside the lift are now lobby and stair.',
-      note: 'Reading D2 back showed the problem: it only really took two beds in five of the eight rooms. Rooms 06, 07 and 08 cleared the paper minimum but missed the furniture layout \u2014 07 by barely 5\u20448 of an inch. D3 closes that. The spine moves 7\u2033 west so the Sikandar rooms go from 8\u2032-1\u2033 to 8\u2032-11\u2033 wide, the garden balcony tightens from 1\u2032-11\u2033 to 1\u2032-6\u2033 (it was swallowing the boundary wedge anyway), the front band gives up 2\u2033 to feed the Sikandar side, and the two garden rooms are re-split. Every room now holds two 2\u2032-6\u2033 \u00D7 6\u2032-0\u2033 beds with a wardrobe between and a 2\u2032-5\u2033 strip at the foot. Smallest room is up from 60 to 69 sq ft and the store stays out. The road corridor is also cut back to the two middle bays: the stubs that used to run past the last door were doing nothing, so rooms 01 and 04 absorb them and are entered through the corridor\u2019s end walls instead of its side. That takes the corridor from 99 to 49 sq ft and puts rooms 01 and 04 at 107 and 110 sq ft, lifting the floor average to 92.',
-      cfg: {
-        frontDepth: 15.6, corr: 3.5, spineX: 19.1, nFront: 4,
-        bal: 1.5, wc: 4.75, outerWash: true, outer: 4.7, wcW: 4.6, wcWE: 4.3,
-        west: [[19.1, 32.0], [32.0, 46.4]], east: [[19.1, 27.25], [27.25, 35.4]],
-        eastBal: 2.8, coreY: [35.4, 46.4], coreSide: 'east',
-        coreLobby: true, lobbyDepth: 5.25, liftW: 5.48,
-        endEntry: true
-      }
-    },
-    {
-      id: 'opt-d4', code: 'TF-D4', name: 'Option D4', headline: '8 rooms, tightest core',
-      badge: 'Smallest core · trades code margin',
-      note: 'D3 with the core squeezed to the smallest arrangement the research supports, and the depth handed to the Sikandar rooms. Putting the lift inside the stair well \u2014 the one pattern that costs almost nothing in plan \u2014 was tested and does not fit: a 4-passenger shaft needs a clear well near 1700 \u00D7 1900 mm, so two flights around it come to 12\u2032-2\u2033 across against the 11\u2032-0\u2033 this corner has, and turning the flights the other way needs 12\u2032-7\u2033 of run. Nor does another stair type help \u2014 open-well is wider than a dog-leg by definition, and spirals and winders are barred from a primary exit. So the saving comes from the dog-leg itself: flights back to the 3\u2032-0\u2033 you first asked for, 16 risers instead of 17, and a lift well at the 1500 \u00D7 1300 mm vendor floor rather than a comfortable 1600 \u00D7 1350. The core loses 1\u2032-9\u2033 of depth, both Sikandar rooms go from 69 to 77 sq ft, and the strip left beside the lift becomes a linen store.',
-      note2: 'What it costs: the flights drop from 1.2 m to 0.91 m and the risers go to 190.6 mm, so this fails the stair check that D3 passes. Fine if the building stays a small lodging; not fine if it is assessed as a dormitory, where the stair has to grow rather than shrink. D3 remains the version to build if that call has not been made.',
-      note3: 'Room-space pass. Every component was measured: the Sikandar and road edges already sit on the setback line, so the only slack was the deep road strip and the oversized garden balconies. The road wash-and-balcony strip comes in from 4\u2032-8\u2033 to 4\u2032-4\u2033 \u2014 the wash stays over 15 sq ft and the balcony over 12 \u2014 handing depth to all four front rooms. On the garden side the balcony was 45 and 55 sq ft because it swallowed the whole slanted sliver down the full room depth; pulling the bedroom\u2019s inner face west from 1\u2032-6\u2033 to 7\u2033 off the boundary hands most of that back to the room while the balcony keeps a 2\u2032-9\u2033 stand-in strip at the front where the garden view is. Room 06, the runt at 70 sq ft, is now 93; Room 05 reaches 114; the floor average rises from 90 to 94 sq ft, all beds and doors still clear.',
-      cfg: {
-        frontDepth: 15.6, corr: 3.5, spineX: 19.1, nFront: 4,
-        bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.7, wcW: 4.6, wcWE: 4.3,
-        westBal: 0.6,
-        west: [[19.1, 32.0], [32.0, 46.4]], east: [[19.1, 28.13], [28.13, 37.16]],
-        eastBal: 2.8, coreY: [37.16, 46.4], coreSide: 'east',
-        coreLobby: true, lobbyDepth: 3.82, liftW: 4.77, stairW: 6.83,
-        liftSub: '4-passenger \u00B7 1500 \u00D7 1300 well', endEntry: true
-      }
-    },
-    {
       id: 'opt-d7', code: 'TF-D7', name: 'Option D7', headline: '8 rooms, lift on the corridor',
-      badge: 'Lift faces R07/R08 \u00B7 one stair bay',
-      note: 'D4 with the core rebuilt around where the lift should open. The corridor arm moves to the blind rear, which lets the lift drop to the south-west corner of the core \u2014 its door now opens west straight onto the spine corridor, in line with the doors of rooms 07 and 08, instead of at the dead end past them. Step out of the lift and both rooms are in front of you.',
-      note2: 'The stair takes the whole east bay as one undivided dog-leg, 9\u2032-3\u2033 across and 8\u2032-5\u2033 deep, with the flights running east\u2013west and the turn at the Sikandar wall. Flights are 1.23 m \u2014 well over the 1.0 m NBC asks and much better than D4\u2019s 0.91 m. The run is short for a full 8-going pair, so the turn takes winders; the arm along the rear is the arrival landing and also carries you from the spine to the stair door.',
-      note3: 'Rooms 07 and 08 land near 84 sq ft against D4\u2019s 77, and the core is 8\u2032-11\u2033 deep rather than D4\u2019s 9\u2032-3\u2033. Two arrangements tested on the way here were dropped: a spiral beside the lift, which is barred as a primary exit on a G+3 lodging, and a lift sitting inside the stair well with a flight each side, which grew slightly bigger rooms but split the stair in two and left the lift facing the wrong way. If a winder-free dog-leg is required, the core has to go back to D3\u2019s depth and both rooms drop to 69.',
+      badge: 'Core resolved \u00B7 recommended',
+      note: 'The developed version of D, and the one worth building. Three things separate it. The washroom moves out onto the gallery, sharing the outer strip with a shorter balcony instead of eating a slice of the room\u2019s depth \u2014 that hands about 2\u2032-0\u2033 back to every bedroom and gives each washroom a real window. The road corridor is cut back to the two middle bays, because the stubs running past the last door were dead circulation; rooms 01 and 04 absorb them and are entered through the corridor\u2019s end walls. And the garden balconies stop swallowing the whole boundary wedge, which lifts room 06 from a 70 sq ft runt to 89.',
+      note2: 'The core is built around where the lift should open. Its corridor arm runs along the blind rear rather than across the front of the core, which lets the lift drop to the south-west corner \u2014 the door opens west straight onto the spine corridor, in line with the doors of rooms 07 and 08, instead of at the dead end past them. Step out of the lift and both rooms are in front of you. The lift well is 1500 \u00D7 1300 mm, the 4-passenger vendor floor common to the Hybon, IEC and Hexa tables, with its entrance on the 1500 side facing the corridor.',
+      note3: 'The stair takes the whole east bay as one undivided dog-leg, 9\u2032-3\u2033 across and 8\u2032-5\u2033 deep, flights running east\u2013west with the turn at the Sikandar wall. Flights are 1.23 m, comfortably over the 1.0 m NBC asks of an apartment stair. The run is short for a full 8-going pair, so the turn takes winders \u2014 the one compromise in the plan. A winder-free pair needs about 1\u2032-1\u2033 more width than this corner has, and buying it means either a deeper core, which pulls rooms 07 and 08 back from 84 sq ft to around 69, or moving the spine west and taking it off the garden rooms. Two other cores were tested and dropped: a spiral beside the lift, barred as a primary exit on a G+3 lodging, and the lift sitting inside the stair well with a flight each side, which gave slightly larger rooms but split the stair in two and left the lift facing the wrong way.',
       cfg: {
         frontDepth: 15.6, corr: 3.5, spineX: 18.75, nFront: 4,
         bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.4, wcW: 4.6, wcWE: 4.4,
