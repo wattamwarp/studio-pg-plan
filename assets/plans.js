@@ -113,7 +113,7 @@
     // open floor beside the washroom door, never into a bed.
     out.push({
       n: 'ROOM ' + tag, tag: tag, r: ins(bedR), t: 'bed', cat: 'bed',
-      module: (x1 - x0) * (y1 - y0), face: face, grp: tag
+      module: (x1 - x0) * (y1 - y0), face: face, grp: tag, lShape: o.lShape
     });
     out.push({ n: 'WASH', tag: tag, r: ins(wcR), t: 'wc', k: 'wc', cat: 'wc' });
     if (enR) out.push({ n: '', tag: tag, r: ins(enR), t: 'bed', cat: 'bed', grp: tag, quiet: 1 });
@@ -157,7 +157,8 @@
       fTag.push(tag);
       sp = sp.concat(module_({
         x0: fx[f], y0: 0, x1: fx[f + 1], y1: FD, tag: tag, doors: doors,
-        face: c.outerWash ? 'S2' : 'S', outer: c.outer, wcW: c.wcW, bal: c.bal, wc: c.wc
+        face: c.outerWash ? 'S2' : 'S', outer: c.outer, wcW: c.wcW, bal: c.bal, wc: c.wc,
+        lShape: c.frontL
       }));
       if (f === 0) {
         sp.push({
@@ -202,6 +203,10 @@
         });
       } else {
         var mx = (fx[g] + fx[g + 1]) / 2;
+        // with the beds set at right angles the first one runs down the west
+        // wall and reaches the corridor, so the door steps east of it and lands
+        // in the open corner instead of against a headboard
+        if (c.frontL) mx += 1.3;
         doors.push({ v: 0, y: FD, x0: mx - 1.3, x1: mx + 1.3, into: -1, hinge: 'left' });
       }
     }
@@ -393,6 +398,24 @@
       }
     },
     {
+      id: 'opt-d8', code: 'TF-D8', name: 'Option D8', headline: '8 rooms, L-shaped beds on the road',
+      badge: 'Biggest shared corner',
+      note: 'D7 with the four road-facing rooms re-furnished. Instead of two beds side by side with a wardrobe between them, the beds turn through 90 degrees: one runs down the party wall with its head against the corridor, the second sits directly beneath it running across the room, head against the same wall. Both headboards are against something solid and the far corner is left whole.',
+      note2: 'The point is what is left over. Two parallel beds spread their slack into a shallow strip at the foot of both, which is circulation and nothing else. The L gathers it into one square of about 31 sq ft in the corner by the door \u2014 enough for two chairs and a small table, so the room reads as a shared study rather than a dormitory. The core, the garden rooms and the Sikandar rooms are exactly D7; only rooms 01 to 04 change.',
+      note3: 'Two consequences. The entry doors to rooms 02 and 03 step 1\u2032-3\u2033 east so they open into that corner rather than against the first headboard; rooms 01 and 04 are entered from the corridor ends and needed no change. And the route to the washroom narrows: the crossways bed runs 6\u2032-0\u2033 of the room\u2019s 7\u2032-11\u2033 width, leaving a 1\u2032-8\u2033 gap to squeeze past on the way to the wash and balcony doors. D7 keeps a full-width path there, so the choice is a better sitting corner against an easier walk to the washroom.',
+      cfg: {
+        frontDepth: 15.6, corr: 3.5, spineX: 18.75, nFront: 4,
+        bal: 1.5, wc: 4.75, outerWash: true, outer: 4.3, outerE: 4.4, wcW: 4.6, wcWE: 4.4,
+        westBal: 0.6, frontL: true,
+        west: [[19.1, 32.0], [32.0, 46.4]], east: [[19.1, 28.29], [28.29, 37.48]],
+        eastBal: 2.8, coreY: [37.48, 46.4], coreSide: 'east',
+        coreLobby: true, armSide: 'N', stairType: 'winder', lobbyDepth: 3.5,
+        liftW: 4.77, stairW: 9.7594,
+        liftSub: '4-passenger \u00B7 1500 \u00D7 1300 well \u00B7 door on spine',
+        stairSub: 'Dog-leg \u00B7 1.23 m flights \u00B7 winder turn', endEntry: true
+      }
+    },
+    {
       id: 'opt-e', code: 'TF-E', name: 'Option E', headline: '8 rooms, deep front band',
       badge: 'Most even rooms',
       note: 'Option A with the road band pushed to 19 ft and the spine nudged west. The four front bedrooms gain about 10 sq ft each and the whole floor lands within a few square feet of itself \u2014 the most consistent product of the five.',
@@ -420,9 +443,10 @@
     var fitY = h >= along && w >= across, fitX = w >= along && h >= across;
     var useX = fitX && (east || !fitY);
 
-    function bedNS(x, y) {
+    function bedNS(x, y, headNorth) {
+      var py = headNorth ? y + BED_L - 1.1 : y + 0.15;
       out.push({ k: 'bed', x0: x, y0: y, x1: x + BED_W, y1: y + BED_L,
-        pillow: [x + 0.15, y + 0.15, x + BED_W - 0.15, y + 1.1] });
+        pillow: [x + 0.15, py, x + BED_W - 0.15, py + 0.95] });
     }
     function bedEW(x, y, headWest) {
       var px = headWest ? x + 0.15 : x + BED_L - 1.1;
@@ -434,6 +458,17 @@
     // margin rather than the block being jammed into one corner
     var pair = 2 * BED_W + WR_D + 0.4;
     function off(room, block) { return Math.max(0.1, (room - block) / 2); }
+
+    // Beds set at right angles down one wall rather than side by side. Two
+    // parallel beds leave a shallow strip at the foot that reads as leftover;
+    // turning the second bed through 90 degrees gathers the same slack into
+    // one square corner that two people can actually sit in.
+    if (sp.lShape && h >= BED_L + BED_W + 0.9 && w >= BED_L + 0.5) {
+      var lx = b.x0 + 0.25, ly = b.y1 - 0.25 - BED_L;
+      bedNS(lx, ly, true);                       // head against the corridor wall
+      bedEW(lx, ly - 0.25 - BED_W, true);        // head against the same side wall
+      return out;
+    }
 
     if (!useX && fitY) {
       // garden rooms have their balcony door in the west wall, so the block is
